@@ -26,6 +26,7 @@ class PostModel(db.Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     post_title = Column(String, index=True)
     post_description = Column(String)
+    image = Column(String)
     created_at = Column(
         DateTime, default=datetime.utcnow())
     user = orm.relation("User", back_populates="posts")
