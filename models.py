@@ -13,8 +13,11 @@ class UserModel(db.Base):
     email = Column(String, unique=True, index=True)
     password_hash = Column(String)
     created_at = Column(
-        DateTime, default=datetime.utcnow)
+        DateTime, default=datetime.utcnow())
     posts = orm.relation("Post", back_populates="user")
+
+    def password_verification(self, password: str):
+        return hash.bcrypt.verify(password, self.password_hash)
 
 
 class PostModel(db.Base):
@@ -24,5 +27,5 @@ class PostModel(db.Base):
     post_title = Column(String, index=True)
     post_description = Column(String)
     created_at = Column(
-        DateTime, default=datetime.utcnow)
+        DateTime, default=datetime.utcnow())
     user = orm.relation("User", back_populates="posts")
