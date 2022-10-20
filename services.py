@@ -1,4 +1,5 @@
 import db
+import models as models
 
 
 def create_db():
@@ -12,5 +13,6 @@ def get_session():
         yield session
     finally:
         session.close()
+
 
 # create_db()
