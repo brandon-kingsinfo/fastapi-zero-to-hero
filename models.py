@@ -14,7 +14,7 @@ class UserModel(_db.Base):
     password_hash = Column(String)
     created_at = Column(
         DateTime, default=datetime.utcnow())
-    posts = _orm.relation("Post", back_populates="user")
+    posts = _orm.relation("PostModel", back_populates="user")
 
     def password_verification(self, password: str):
         return hash.bcrypt.verify(password, self.password_hash)
@@ -29,4 +29,4 @@ class PostModel(_db.Base):
     image = Column(String)
     created_at = Column(
         DateTime, default=datetime.utcnow())
-    user = _orm.relation("User", back_populates="posts")
+    user = _orm.relation("UserModel", back_populates="posts")

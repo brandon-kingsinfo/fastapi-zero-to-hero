@@ -3,16 +3,18 @@ import fastapi.security as _security
 import sqlalchemy.orm as _orm
 import schemas as _schemas
 import services as _services
+import os
 
+print(os.getenv("JWT_SECRET"))
 app = _fastapi.FastAPI()
 
 
 @app.post("/api/v1/users")
 async def register_user(user: _schemas.UserRequest, session: _orm.Session = _fastapi.Depends(_services.get_session)):
     '''if email exists return error'''
-    user = await _services.getUserByEmail(user.email, session)
+    existing_user = await _services.getUserByEmail(user.email, session)
 
-    if user:
+    if existing_user:
         raise _fastapi.HTTPException(
             status_code=400, detail="email already exists")
 

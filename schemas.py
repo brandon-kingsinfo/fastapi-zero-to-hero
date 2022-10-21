@@ -16,6 +16,7 @@ class UserRequest(UserBase):
     password: str
 
     class Config:
+        # set orm_mode to True, so that we can convert user model to user schema
         orm_mode = True
 
 
