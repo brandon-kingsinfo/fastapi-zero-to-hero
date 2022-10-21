@@ -22,7 +22,6 @@ def get_session():
         session.close()
 
 
-# create_db()
 async def getUserByEmail(email: str, session: _orm.Session):
     return session.query(_models.UserModel).filter(
         _models.UserModel.email == email).first()

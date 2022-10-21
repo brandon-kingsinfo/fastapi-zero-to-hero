@@ -32,6 +32,6 @@ async def login(formdata: _security.OAuth2PasswordRequestForm = _fastapi.Depends
 
     if not user:
         raise _fastapi.HTTPException(
-            status_code=402, detail="wrong login credentials")
+            status_code=401, detail="wrong login credentials")
 
     return await _services.create_token(user)
