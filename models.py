@@ -1,11 +1,11 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-import sqlalchemy.orm as orm
-import passlib.hash as hash
-import db as db
+import sqlalchemy.orm as _orm
+import passlib.hash as _hash
+import db as _db
 
 
-class UserModel(db.Base):
+class UserModel(_db.Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
@@ -14,13 +14,13 @@ class UserModel(db.Base):
     password_hash = Column(String)
     created_at = Column(
         DateTime, default=datetime.utcnow())
-    posts = orm.relation("Post", back_populates="user")
+    posts = _orm.relation("Post", back_populates="user")
 
     def password_verification(self, password: str):
         return hash.bcrypt.verify(password, self.password_hash)
 
 
-class PostModel(db.Base):
+class PostModel(_db.Base):
     __tablename__ = "posts"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
@@ -29,4 +29,4 @@ class PostModel(db.Base):
     image = Column(String)
     created_at = Column(
         DateTime, default=datetime.utcnow())
-    user = orm.relation("User", back_populates="posts")
+    user = _orm.relation("User", back_populates="posts")

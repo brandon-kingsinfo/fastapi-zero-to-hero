@@ -1,13 +1,14 @@
-import db
-import models as models
+import db as _db
+import models as _models
+import sqlalchemy.orm as _orm
 
 
 def create_db():
-    return db.Base.metadata.create_all(bind=db.engine)
+    return _db.Base.metadata.create_all(bind=_db.engine)
 
 
 def get_session():
-    session = db.Session()
+    session = _db.Session()
 
     try:
         yield session
@@ -16,3 +17,14 @@ def get_session():
 
 
 # create_db()
+'''description of getUserByEmail'''
+
+
+async def getUserByEmail(email: str, session: _orm.Session):
+    rs = session.query(_models.UserModel).filter(
+        _models.UserModel.email == email).first()
+
+    if rs:
+        return {"status": True, "data": rs}
+
+    return {"status": False, "errmsg": f"email {email} not found"}
