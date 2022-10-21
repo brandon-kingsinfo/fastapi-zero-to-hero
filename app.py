@@ -23,3 +23,15 @@ async def register_user(user: _schemas.UserRequest, session: _orm.Session = _fas
     new_user = await _services.create_user(user, session)
 
     return await _services.create_token(new_user)
+
+
+@app.post("/api/v1/login")
+async def login(formdata: _security.OAuth2PasswordRequestForm = _fastapi.Depends(),
+                session: _orm.Session = _fastapi.Depends(_services.get_session)):
+    user = await _services.login(formdata.username, formdata.password, session)
+
+    if not user:
+        raise _fastapi.HTTPException(
+            status_code=402, detail="wrong login credentials")
+
+    return await _services.create_token(user)
