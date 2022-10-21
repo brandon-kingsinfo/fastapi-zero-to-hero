@@ -6,7 +6,10 @@ import email_validator as _email_validator
 import fastapi as _fastapi
 import passlib.hash as _hash
 import jwt as _jwt
-import os
+import os as _os
+import fastapi.security as _security
+
+oauth2schema = _security.OAuth2PasswordBearer("/api/v1/login")
 
 
 def create_db():
@@ -65,7 +68,7 @@ async def create_token(user: _models.UserModel):
     # remove the "created_at" key, so we don't break the token
     del user_dict["created_at"]
 
-    token = _jwt.encode(user_dict, os.getenv("JWT_SECRET"))
+    token = _jwt.encode(user_dict, _os.getenv("JWT_SECRET"))
 
     return dict(access_token=token, token_type="bearer")
 
@@ -80,3 +83,16 @@ async def login(email: str, password: str, session: _orm.Session):
         return False
 
     return user
+
+
+async def current_user(session: _orm.Session,
+                       token: str = _fastapi.Depends(oauth2schema)):
+    try:
+        payload = _jwt.decode(token,  _os.getenv(
+            "JWT_SECRET"), algorithms="HS256")
+        user = session.query(_models.UserModel).get(payload["id"])
+    except:
+        raise _fastapi.HTTPException(
+            status_code=401, detail="wrong credentials")
+
+    return _schemas.UserResponse.from_orm(user)
