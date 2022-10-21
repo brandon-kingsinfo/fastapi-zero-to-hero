@@ -85,7 +85,7 @@ async def login(email: str, password: str, session: _orm.Session):
     return user
 
 
-async def current_user(session: _orm.Session,
+async def current_user(session: _orm.Session = _fastapi.Depends(get_session),
                        token: str = _fastapi.Depends(oauth2schema)):
     try:
         payload = _jwt.decode(token,  _os.getenv(

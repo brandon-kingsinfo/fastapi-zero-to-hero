@@ -35,3 +35,8 @@ async def login(formdata: _security.OAuth2PasswordRequestForm = _fastapi.Depends
             status_code=401, detail="wrong login credentials")
 
     return await _services.create_token(user)
+
+
+@app.get("/api/v1/current-user", response_model=_schemas.UserResponse)
+async def current_user(user: _schemas.UserResponse = _fastapi.Depends(_services.current_user)):
+    return user
