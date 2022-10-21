@@ -15,3 +15,9 @@ async def register_user(user: _schemas.UserRequest, session: _orm.Session = _fas
     if user:
         raise _fastapi.HTTPException(
             status_code=400, detail="email already exists")
+
+    # create the user and return a token
+
+    new_user = await _services.create_user(user, session)
+
+    return await _services.create_token(new_user)

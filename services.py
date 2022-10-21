@@ -5,6 +5,8 @@ import schemas as _schemas
 import email_validator as _email_validator
 import fastapi as _fastapi
 import passlib.hash as _hash
+import jwt as _jwt
+import os as _os
 
 
 def create_db():
@@ -50,3 +52,18 @@ async def create_user(user: _schemas.UserRequest, session: _orm.Session):
     session.refresh(user_obj)
 
     return user_obj
+
+
+async def create_token(user: _models.UserModel):
+    # convert user model to user schema
+    user_schema = _schemas.UserBase.from_orm(user)
+
+    # convert a pydantic object to dictionary
+    user_dict = user_schema.dict()
+
+    # remove the "created_at" key, so we don't break the token
+    del user_dict["created_at"]
+
+    token = _jwt.encode(user_dict, _os.getenv("JWT_TOKEN"))
+
+    return dict(access_token=token, token_type="bearer")
